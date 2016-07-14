@@ -1,9 +1,19 @@
 call plug#begin('~/.config/nvim/plugged')
 
+function! DoRemote(arg)
+  UpdateRemotePlugins
+endfunction
+
+Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
+Plug 'carlitux/deoplete-ternjs'
+
 Plug 'NLKNguyen/papercolor-theme'
 Plug 'benekastah/neomake'
+Plug 'elixir-lang/vim-elixir'
+Plug 'elmcast/elm-vim'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
+Plug 'matze/vim-move'  " bindings not working?!?!?
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-eunuch'
 Plug 'tpope/vim-fugitive'
@@ -15,6 +25,12 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
 call plug#end()
+
+" elmcast/elm-vim
+let g:elm_format_autosave = 1
+
+" deoplete
+let g:deoplete#enable_at_startup = 1
 
 set softtabstop=2
 set tabstop=2
@@ -63,7 +79,7 @@ if !isdirectory(expand(&directory))
 endif
 
 if has('persistent_undo')
-  let myUndoDir = expand('$HOME/.vim/tmp/undo/')
+  let myUndoDir = expand('$HOME/.config/nvim/tmp/undo/')
   if !isdirectory(myUndoDir)
     call mkdir(myUndoDir, 'p')
   endif
@@ -163,6 +179,9 @@ augroup line_return
     \     execute 'normal! g`"zvzz' |
     \ endif
 augroup END
+
+" Elm
+autocmd FileType Elm setlocal shiftwidth=4 softtabstop=4
 
 " Neomake
 autocmd! BufWritePost * Neomake
