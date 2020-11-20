@@ -1,13 +1,20 @@
+" Install vim-plug if not installed
+if empty(glob('~/.config/nvim/autoload/plug.vim'))
+  silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall
+endif
+
 call plug#begin('~/.config/nvim/plugged')
 
-" Plug 'challenger-deep-theme/vim', { 'as': 'challenger-deep' }
-
+Plug 'challenger-deep-theme/vim', { 'as': 'challenger-deep' }
+Plug 'dense-analysis/ale'
 Plug 'NLKNguyen/papercolor-theme'
 Plug 'docker/docker', {'rtp': '/contrib/syntax/vim/'}
 Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'editorconfig/editorconfig-vim'
 Plug 'elmcast/elm-vim'
-Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+" Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'google/vim-searchindex'
 Plug 'mhinz/vim-grepper'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -22,96 +29,100 @@ Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-rhubarb'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
+Plug 'tbastos/vim-lua'
 Plug 'vimwiki/vimwiki'
 
-" Plug 'scrooloose/nerdtree'
+" == TypeScript and JavaScript  ==
+Plug 'leafgarland/typescript-vim'
+Plug 'peitalin/vim-jsx-typescript'
+Plug 'jason0x43/vim-js-indent'
+
+if has('nvim')
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+else
+  Plug 'Shougo/deoplete.nvim'
+  Plug 'roxma/nvim-yarp'
+  Plug 'roxma/vim-hug-neovim-rpc'
+endif
+
+Plug 'nvim-treesitter/nvim-treesitter'
 
 Plug 'airblade/vim-gitgutter'
 Plug 'nathanaelkane/vim-indent-guides'
 
-Plug 'sbdchd/neoformat'
-let g:neoformat_only_msg_on_error = 0
-let g:neoformat_javascript_prettier = {
-  \ 'exe': 'prettier',
-  \ }
-let g:neoformat_typescript_prettier = {
-  \ 'exe': 'prettier',
-  \ }
-let g:neoformat_enabled_typescript = ['prettier']
 
-let g:neoformat_enabled = 1
-augroup neoformat
-  autocmd BufWritePre *.js,*.jsx,*.ts,*.tsx
-    \ if g:neoformat_enabled == 1 |
-    \   Neoformat |
-    \ endif
-augroup end
-
-command! NeoformatDisable let g:neoformat_enabled = 0
-command! NeoformatEnable let g:neoformat_enabled = 1
-
-" == Autocomplete plugins ==
-" https://www.gregjs.com/vim/2016/neovim-deoplete-jspc-ultisnips-and-tern-a-config-for-kickass-autocompletion/
-" Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins'  }
 " Plug 'SirVer/ultisnips'
 " Plug 'ervandew/supertab'
-" Plug 'ternjs/tern_for_vim', { 'for': ['javascript', 'javascript.jsx'] }
-" Plug 'carlitux/deoplete-ternjs', { 'for': ['javascript', 'javascript.jsx'] }
-
-" Plug 'othree/yajs.vim', { 'for': ['javascript', 'javascript.jsx'] }
-" Plug 'othree/javascript-libraries-syntax.vim', { 'for': ['javascript', 'javascript.jsx'] }
-" Plug 'othree/jspc.vim', { 'for': ['javascript', 'javascript.jsx'] }
-" Plug 'fleischie/vim-styled-components'
-
-Plug 'iloginow/vim-stylus'
-
-" == JavaScript syntax highlighting ==
-" Plug 'othree/yajs.vim', { 'for': ['javascript', 'javascript.jsx'] }
-" Plug 'othree/es.next.syntax.vim', { 'for': ['javascript', 'javascript.jsx'] }
 
 " Plug 'pangloss/vim-javascript', { 'for': ['javascript', 'javascript.jsx'] }
-" Plug 'mxw/vim-jsx', { 'for': ['javascript', 'javascript.jsx'] }
 " Plug 'MaxMEllon/vim-jsx-pretty', { 'for': ['javascript', 'javascript.jsx'] }
 
-" Plug 'jason0x43/vim-js-indent'
-"
-
-" == TypeScript ==
-" Plug 'leafgarland/typescript-vim'
-" Plug 'Quramy/tsuquyomi'
-
-" if has('balooneval')
-"   set ballooneval
-"   autocmd FileType typescript setlocal balloonexpr=tsuquyomi#balloonexpr()
-" endif
-
-autocmd FileType typescript setlocal
-      \ smartindent
-      \ softtabstop=2
-      \ shiftwidth=2
-      \ expandtab 
-
-" Plug 'ernstvanderlinden/vim-coldfusion'
-
 call plug#end()
+
+" TypeScript config {{{1
+
+autocmd FileType typescript,typescriptreact setlocal
+      \ smartindent
+      \ softtabstop=4
+      \ shiftwidth=4
+      \ expandtab
+
+autocmd FileType javascript,typescript,typescriptreact map <buffer> <c-]> :ALEGoToDefinition<CR>
+
+autocmd FileType lua setlocal
+      \ smartindent
+      \ softtabstop=4
+      \ shiftwidth=4
+      \ noexpandtab
+" }}}1
+
+" TreeSitter {{{1
+
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+	-- one of "all", "maintained" (parsers with maintainers), or a list of languages
+	ensure_installed = {
+		"c",
+		"cpp",
+		"css",
+		"elm",
+		"html",
+		"javascript",
+		"json",
+		"jsdoc",
+		"lua",
+		"python",
+		"typescript",
+		"tsx"
+	},
+
+	highlight = {
+		-- false will disable the whole extension
+		enable = true,
+
+		-- list of languages to disable
+		disable = {},
+	},
+}
+EOF
+
+" }}}1
 
 " elmcast/elm-vim
 let g:elm_format_autosave = 1
 
 " deoplete
-" let g:deoplete#enable_at_startup = 1
+let g:deoplete#enable_at_startup = 1
 
 " General editor settings
 set linebreak       " Break lines when appropriate
 set smartindent
 set softtabstop=2
-set tabstop=8
+set tabstop=4
 set shiftwidth=2
 set expandtab
 set textwidth=100
-
-set backup
-set noswapfile
+set mouse=a
 
 set laststatus=2
 set number
@@ -133,16 +144,8 @@ if exists('+spelllang')
   set spelllang=en_us
 endif
 
-if has('persistent_undo')
-  set undodir=~/.vim/tmp/undo//     " undo files
-  " Make the folder automatically if it doesn't already exist.
-  if !isdirectory(expand(&undodir))
-    call mkdir(expand(&undodir), "p")
-  endif
-endif
-
-set backupdir=~/.config/nvim/tmp/backup/ " backups
-set directory=~/.config/nvim/tmp/swap/   " swap files
+set backupdir=$HOME/.config/nvim/tmp/backup// " backups
+set directory=$HOME/.config/nvim/tmp/swap//   " swap files
 
 " Make those folders automatically if they don't already exist.
 if !isdirectory(expand(&backupdir))
@@ -152,8 +155,11 @@ if !isdirectory(expand(&directory))
   call mkdir(expand(&directory), 'p')
 endif
 
+set backup
+set noswapfile
+
 if has('persistent_undo')
-  let myUndoDir = expand('$HOME/.config/nvim/tmp/undo/')
+  let myUndoDir = expand('$HOME/.config/nvim/tmp/undo//')
   if !isdirectory(myUndoDir)
     call mkdir(myUndoDir, 'p')
   endif
@@ -175,6 +181,10 @@ set wildignore+=*.spl                            " compiled spelling word lists
 set wildignore+=*.sw?                            " Vim swap files
 set wildignore+=*.DS_Store                       " OSX bullshit
 set wildignore+=*.orig                           " Merge resolution files
+
+" Vimwiki
+let g:vimwiki_list = [{'path': '~/Sync/wiki/', 'syntax': 'markdown'}]
+au FileType vimwiki setlocal shiftwidth=6 tabstop=6 noexpandtab
 
 " Cursorline
 
@@ -229,7 +239,7 @@ noremap <C-k> <C-w>j
 noremap <C-l> <C-w>l
 
 " Terminal configuration
-let g:terminal_scrollback_buffer_size=5000
+let g:terminal_scrollback_buffer_size=15000
 "tnoremap <Esc> <C-\><C-n>
 tnoremap <C-h> <C-\><C-n><C-w>k
 tnoremap <C-j> <C-\><C-n><C-w>h
@@ -258,72 +268,57 @@ augroup reload_vimrc
 augroup END
 
 " Completion
-autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-let g:deoplete#omni#functions = {}
-let g:deoplete#omni#functions.javascript = [
-  \ 'tern#Complete',
-  \ 'jspc#omni'
-\]
+
 
 set completeopt=longest,menuone,preview
-let g:deoplete#sources = {}
-let g:deoplete#sources['javascript.jsx'] = ['file', 'ultisnips']
-let g:tern#command = ['tern']
-let g:tern#arguments = ['--persistent']
 
 autocmd FileType javascript,javascript.jsx let g:SuperTabDefaultCompletionType = "<c-x><c-o>"
 let g:UltiSnipsExpandTrigger="<C-j>"
 inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 
-" close the preview window when you're not using it
-" let g:SuperTabClosePreviewOnPopupClose = 1
-
-" or just disable the preview entirely
-" set completeopt-=preview"
-
 " Indentation
 autocmd FileType elm setlocal shiftwidth=4 softtabstop=4
 autocmd FileType gitcommit setlocal textwidth=72
 
-autocmd FileType eoz
-    \ setlocal
-      \ noexpandtab
-      \ foldmethod=syntax
-      \ shiftwidth=4
-      \ smarttab
-      \ softtabstop=0
-      \ tabstop=4
-
-autocmd BufRead,BufNewFile *.cfm set filetype=eoz
-autocmd BufRead,BufNewFile *.cfc set filetype=eoz
-
 autocmd BufRead,BufNewFile .babelrc set filetype=json
 
-" == scrooloose/syntastic ==
-" set statusline+=%#warningmsg#
-" set statusline+=%{SyntasticStatuslineFlag()}
-" set statusline+=%*
-" let g:syntastic_always_populate_loc_list = 0
-" let g:syntastic_auto_jump = 0
-" let g:syntastic_auto_loc_list = 0
-" let g:syntastic_check_on_open = 0
-" let g:syntastic_check_on_wq = 1
-" let g:syntastic_javascript_checkers = ['eslint']
-
 " === Keybindings ===
+
+" == ALE ==
+
+let js_fixers = ['prettier']
+let g:ale_linters = {
+      \ 'typescript': ['tslint', 'tsserver', 'typecheck'],
+      \ 'typescriptreact': ['tslint', 'tsserver', 'typecheck'],
+      \}
+let g:ale_fixers = {
+      \ '*': ['remove_trailing_lines', 'trim_whitespace'],
+      \ 'javascript': js_fixers,
+      \ 'javascript.jsx': js_fixers,
+      \ 'typescript': js_fixers,
+      \ 'typescriptreact': js_fixers,
+      \ 'css': ['prettier'],
+      \ 'json': ['prettier'],
+      \ 'scss': ['prettier'],
+      \}
+let g:ale_fix_on_save = 1
 
 nnoremap <M-[> :tabprev<CR>
 nnoremap <M-]> :tabnext<CR>
 inoremap <M-[> <ESC>:tabprev<CR>
 inoremap <M-]> <ESC>:tabnext<CR>
 
+nmap <silent> <leader>al :ALENext<CR>
+nmap <silent> <leader>aj :ALEPrevious<CR>
+nnoremap <silent> gr :ALEFindReferences<CR>
+nnoremap <silent> rn :ALERename<CR>
+
+nnoremap <leader>qf :ALECodeAction<CR>
+vnoremap <leader>qf :ALECodeAction<CR>
+
 " == junegunn/fzf ==
 nnoremap <C-T> :FZF<CR>
 inoremap <C-T> <ESC>:FZF<CR>i
-
-" == scrooloose/nerdtree ==
-" nnoremap <C-\> :NERDTreeToggle<CR>
-" inoremap <C-\> <ESC>:NERDTreeToggle<CR>
 
 " fzf
 " Mapping selecting mappings
@@ -331,15 +326,18 @@ nmap <leader><tab> <plug>(fzf-maps-n)
 xmap <leader><tab> <plug>(fzf-maps-x)
 omap <leader><tab> <plug>(fzf-maps-o)
 
+
 " Insert mode completion
 imap <c-x><c-k> <plug>(fzf-complete-word)
 imap <c-x><c-f> <plug>(fzf-complete-path)
 imap <c-x><c-j> <plug>(fzf-complete-file-ag)
 imap <c-x><c-l> <plug>(fzf-complete-line)
 
+nnoremap <C-S-P> :Files<CR>
 nnoremap <C-p> :GitFiles<CR>
-nnoremap <C-S-p> :Files<CR>
 
 if has('nvim') || has('termguicolors')
   set termguicolors
 endif
+
+colorscheme challenger_deep
