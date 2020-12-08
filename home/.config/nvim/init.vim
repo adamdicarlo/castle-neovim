@@ -46,16 +46,10 @@ else
 endif
 
 Plug 'nvim-treesitter/nvim-treesitter'
+Plug 'nvim-treesitter/nvim-treesitter-refactor'
 
 Plug 'airblade/vim-gitgutter'
 Plug 'nathanaelkane/vim-indent-guides'
-
-
-" Plug 'SirVer/ultisnips'
-" Plug 'ervandew/supertab'
-
-" Plug 'pangloss/vim-javascript', { 'for': ['javascript', 'javascript.jsx'] }
-" Plug 'MaxMEllon/vim-jsx-pretty', { 'for': ['javascript', 'javascript.jsx'] }
 
 call plug#end()
 
@@ -69,12 +63,13 @@ autocmd FileType typescript,typescriptreact setlocal
 
 autocmd FileType javascript,typescript,typescriptreact map <buffer> <c-]> :ALEGoToDefinition<CR>
 
+" }}}1
+
 autocmd FileType lua setlocal
       \ smartindent
       \ softtabstop=4
       \ shiftwidth=4
       \ noexpandtab
-" }}}1
 
 " TreeSitter {{{1
 
@@ -106,6 +101,30 @@ require'nvim-treesitter.configs'.setup {
 }
 EOF
 
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  refactor = {
+    highlight_definitions = { enable = true },
+    smart_rename = {
+      enable = true,
+      keymaps = {
+        smart_rename = "grr",
+      },
+    },
+    navigation = {
+      enable = true,
+      keymaps = {
+        goto_definition = "gnd",
+        list_definitions = "gnD",
+        list_definitions_toc = "gO",
+        goto_next_usage = "<a-*>",
+        goto_previous_usage = "<a-#>",
+      },
+    },
+  },
+}
+EOF
+
 " }}}1
 
 " elmcast/elm-vim
@@ -115,6 +134,7 @@ let g:elm_format_autosave = 1
 let g:deoplete#enable_at_startup = 1
 
 " General editor settings
+colorscheme challenger_deep
 set linebreak       " Break lines when appropriate
 set smartindent
 set softtabstop=2
@@ -122,7 +142,10 @@ set tabstop=4
 set shiftwidth=2
 set expandtab
 set textwidth=100
-set mouse=a
+
+if has('mouse')
+  set mouse=a
+endif
 
 set laststatus=2
 set number
@@ -301,7 +324,9 @@ let g:ale_fixers = {
       \ 'json': ['prettier'],
       \ 'scss': ['prettier'],
       \}
-let g:ale_fix_on_save = 1
+let g:ale_fix_on_save = 0
+let g:ale_completion_enabled = 1
+let g:ale_completion_autoimport = 1
 
 nnoremap <M-[> :tabprev<CR>
 nnoremap <M-]> :tabnext<CR>
@@ -339,5 +364,3 @@ nnoremap <C-p> :GitFiles<CR>
 if has('nvim') || has('termguicolors')
   set termguicolors
 endif
-
-colorscheme challenger_deep
