@@ -171,15 +171,15 @@ if exists('+spelllang')
   set spelllang=en_us
 endif
 
-set backupdir=$HOME/.config/nvim/tmp/backup// " backups
-set directory=$HOME/.config/nvim/tmp/swap//   " swap files
+let &backupdir=expand('$HOME/.config/nvim/tmp/backup//')
+let &directory=expand('$HOME/.config/nvim/tmp/swap//')
 
 " Make those folders automatically if they don't already exist.
-if !isdirectory(expand(&backupdir))
-  call mkdir(expand(&backupdir), 'p')
+if !isdirectory(&backupdir)
+  call mkdir(&backupdir, 'p')
 endif
-if !isdirectory(expand(&directory))
-  call mkdir(expand(&directory), 'p')
+if !isdirectory(&directory)
+  call mkdir(&directory, 'p')
 endif
 
 set backup
