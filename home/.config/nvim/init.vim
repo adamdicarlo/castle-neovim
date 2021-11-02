@@ -22,6 +22,7 @@ Plug 'junegunn/fzf.vim'
 Plug 'machakann/vim-highlightedyank'
 " Plug 'matze/vim-move'  " bindings not working?!?!?
 Plug 'rhysd/committia.vim' " git commit view
+Plug 'tpope/vim-abolish'
 Plug 'tpope/vim-characterize'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-eunuch'
