@@ -63,7 +63,7 @@ autocmd FileType typescript,typescriptreact setlocal
       \ shiftwidth=4
       \ expandtab
 
-autocmd FileType javascript,typescript,typescriptreact map <buffer> <c-]> :ALEGoToDefinition<CR>
+autocmd FileType lua,javascript,typescript,typescriptreact map <buffer> <c-]> :ALEGoToDefinition<CR>
 
 " }}}1
 
