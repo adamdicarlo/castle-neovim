@@ -19,6 +19,7 @@ Plug 'google/vim-searchindex'
 Plug 'mhinz/vim-grepper'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
+Plug 'machakann/vim-highlightedyank'
 " Plug 'matze/vim-move'  " bindings not working?!?!?
 Plug 'rhysd/committia.vim' " git commit view
 Plug 'tpope/vim-characterize'
@@ -132,6 +133,8 @@ let g:elm_format_autosave = 1
 
 " deoplete
 let g:deoplete#enable_at_startup = 1
+
+let g:highlightedyank_highlight_duration = 300
 
 " General editor settings
 colorscheme challenger_deep
