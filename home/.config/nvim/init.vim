@@ -328,6 +328,9 @@ let g:ale_fixers = {
       \ 'json': ['prettier'],
       \ 'scss': ['prettier'],
       \}
+let g:ale_pattern_options = {
+      \ '/dist/': { 'ale_enabled': 0 },
+      \}
 let g:ale_fix_on_save = 0
 let g:ale_completion_enabled = 1
 let g:ale_completion_autoimport = 1
@@ -337,11 +340,17 @@ nnoremap <M-]> :tabnext<CR>
 inoremap <M-[> <ESC>:tabprev<CR>
 inoremap <M-]> <ESC>:tabnext<CR>
 
+" Prev/next error
+nmap <silent> <M-h> <Plug>(ale_previous_wrap)
+nmap <silent> <M-k> <Plug>(ale_next_wrap)
+
 nmap <silent> <leader>al :ALENext<CR>
 nmap <silent> <leader>aj :ALEPrevious<CR>
 nnoremap <silent> gr :ALEFindReferences<CR>
 nnoremap <silent> rn :ALERename<CR>
+nnoremap <silent> gi :ALEHover<CR>
 
+" Quickfix
 nnoremap <leader>qf :ALECodeAction<CR>
 vnoremap <leader>qf :ALECodeAction<CR>
 
