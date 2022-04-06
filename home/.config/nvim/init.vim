@@ -57,6 +57,7 @@ let g:coc_global_extensions = [
   \ 'coc-prettier',
   \ 'coc-eslint8',
   \ 'coc-json',
+  \ 'coc-sh',
   \ ]
 
 let g:terminal_command_motion_prompt_matcher = '^[~/].*\n❯'
